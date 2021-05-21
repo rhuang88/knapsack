@@ -108,13 +108,22 @@ def solve_knapsack(costs, weights, weight_capacity, sampler=None):
             Solution energy
     """
     bqm = build_knapsack_bqm(costs, weights, weight_capacity)
+    print(bqm.shape)
+    print("BQM time = {} seconds".format(timediff))
 
     if sampler is None:
         sampler = LeapHybridSampler()
-
+        
+    t0 = time.perf_counter()
     sampleset = sampler.sample(bqm, label='Example - Knapsack')
+    t1 = time.perf_counter()
+
     sample = sampleset.first.sample
     energy = sampleset.first.energy
+
+    timediff = t1 - t0
+    print("Solve time = {} seconds".format(timediff))
+    print(sampleset.info)  
 
     # Build solution from returned binary variables:
     selected_item_indices = []
